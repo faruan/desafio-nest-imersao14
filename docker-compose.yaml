@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+      - 5555:5555
+    volumes:
+      - .:/home/node/app
+    extra_hosts:
+      - 'host.docker.internal:172.17.0.1'
+    command: npm run start:dev
+
+  db:
+    build: ./.docker/mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_REPLICA_HOST: db # remover essa linha caso utilizar o mongo db do bitnami
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_KEY: 123456
+      MONGODB_DATABASE: nest
+
+volumes:
+  mongodb_data:
+    driver: local
